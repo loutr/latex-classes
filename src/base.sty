@@ -1,0 +1,280 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Lucas Tabary-Maujean, Copyleft 2021
+% Ce fichier ne doit pas être utilisé directement comme paquet
+% Ce fichier est à inclure par la commande \input dans les autres classes de documents.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Paquets %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[utf8]{luainputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amssymb, amsmath, amsthm, mathrsfs}
+\usepackage{fancyhdr}
+\usepackage{xparse}
+\usepackage{listings}
+% \usepackage[table]{xcolor}
+\usepackage{tikz}
+\usepackage[framemethod=tikz]{mdframed}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% IDENTITÉ ET INFORMATIONS RELATIVES AU DOCUMENT %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\categorie#1{\gdef\@categorie{#1}}
+\def\titre#1{\gdef\@titre{#1}}
+\def\identifiant#1{\gdef\@identifiant{#1}}
+\def\auteur#1{\gdef\@auteur{#1}}
+\def\email#1{\gdef\@email{#1}}
+\def\info#1{\gdef\@info{#1}}
+
+\auteur{Lucas \textsc{Tabary-Maujean}}
+\email{l.ta-ma@pm.me}
+\info{ENS Paris-Saclay}
+\identifiant{\@latex@warning@no@line{Veuillez indiquer un \noexpand\identifiant}}
+\titre{\@identifiant}
+\categorie{Informatique}
+\date{\today}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Couleurs personnalisées %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{darkgray}{rgb}{0.2,0.2,0.2}
+\definecolor{dark}{rgb}{0,0,0}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%% Configuration des environnements listings (écriture d'algorithmes) %%%%%%%%%%%%%%%%
+\lstMakeShortInline[columns=fixed]£
+
+\lstdefinestyle{default}{
+    frame=tb,
+    basicstyle={\small\ttfamily\color{darkgray}},
+    numbers=left,
+    numberstyle=\scriptsize\sffamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    breaklines=true,
+    breakatwhitespace=true
+}
+
+\lstdefinestyle{caml}{
+    style=default,
+    language=Caml,
+    morekeywords={val, int, string, fst, snd, =, !}
+}
+\lstnewenvironment{caml}[1][]{\lstset{style=caml, #1}}{}
+
+\lstdefinestyle{py}{
+    style=default,
+    language=Python
+}
+\lstnewenvironment{py}[1][]{\lstset{style=py, #1}}{}
+
+\lstdefinestyle{bash}{
+    style=default,
+    language=Bash
+}
+\lstnewenvironment{bash}[1][]{\lstset{style=bash, #1}}{}
+
+\lstdefinestyle{c}{
+    style=default,
+    language=C
+}
+\lstnewenvironment{clanguage}[1][]{\lstset{style=c, #1}}{}
+
+\lstdefinestyle{naturel}{
+    style=default,
+    comment=[l]{//},
+    keywords={for, to, do, done, if, then, else, end, while,
+	match, with, function, and, or, return},
+    literate= % attention à l'ordre des opérateurs si certains sont suffixes des autres
+	{<}{$<$}{1}
+	{<=}{$\leqslant$}{1}
+	{>}{$>$}{1}
+	{>=}{$\geqslant$}{1}
+	{<>}{$\neq$}{1}
+	{<-}{$\leftarrow$}{2},
+    escapeinside={(*}{*)},
+}
+\lstnewenvironment{naturel}[1][]{\lstset{style=naturel, #1}}{}
+
+\lstset{style=default}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Environnements Personnalisés %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Trace un double cercle pour mettre le numéro d'exercice
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+    \node[shape=circle,double,fill=gray!10,draw,inner sep=1.5pt] (char) {#1};}}
+
+
+% Questions/Énoncés
+\newmdenv[
+    skipabove=\topskip, skipbelow=\topskip,
+    innermargin=0pt, roundcorner=4pt,
+    innerleftmargin=4pt, innerrightmargin=4pt, innertopmargin=4pt, innerbottommargin=4pt,
+    linecolor=gray, backgroundcolor=gray!10, linewidth=1.5pt
+]{question*}
+\newenvironment{question}[1][]
+{\begin{question*}
+    \ifx#1\@empty
+    \else
+	\makebox[0pt][r]{\smash{\raisebox{-.333\height}{\circled{#1}\hspace{11pt}}\ignorespaces}}
+    \fi
+}
+{\end{question*}}
+
+% ajoute un nom en fin de citation, éventuellement sur la même ligne
+% https://tex.stackexchange.com/questions/13756/quote-environment-with-reference-at-the-end-right
+\def\signed #1{{\leavevmode\unskip\nobreak\hfil\penalty50\hskip2em
+	\hbox{}\nobreak\color{darkgray}\hfil--- #1%
+  \parfillskip=0pt \finalhyphendemerits=0 \endgraf}}
+
+% Citations
+\newmdenv[
+    skipabove=\topskip, skipbelow=\topskip,
+    innermargin=0pt, roundcorner=4pt,
+    innerleftmargin=4pt, innerrightmargin=4pt, innertopmargin=4pt, innerbottommargin=4pt,
+    backgroundcolor=gray!10, linewidth=0pt,
+    align=center, outermargin=0.15\textwidth
+]{citation*}
+\renewenvironment{citation}[1][]
+{%
+    \def\auteur{#1}% défini pour pouvoir être utilisé dans \endcitation
+    \begin{citation*}
+    \makebox[0pt][r]{\smash{\raisebox{-.333\height}
+    {{\Huge\bfseries \textcolor{gray}{``}}\hspace{-4pt}}\ignorespaces}}
+}
+{%
+    \ifx\auteur\@empty
+    \else
+	\signed{\auteur}
+    \fi
+    \end{citation*}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Macros mathématiques %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\let\oldsim\sim
+\let\eps\varepsilon
+\let\bar\overline
+\let\til\widetilde
+\let\imp\Longrightarrow
+% Attention ! Redéfinition de \sim (~)
+\renewcommand{\sim}[2][]{\underset{\ifx#1\@empty%
+    \else%
+        #1\rightarrow%
+    \fi #2}{\oldsim}}
+\newcommand{\dl}[2][]{\underset{\ifx#1\@empty%
+    \else%
+        #1\rightarrow%
+    \fi #2}{=}}
+\newcommand{\liim}[2][]{\underset{\ifx#1\@empty%
+    \else%
+        #1\rightarrow%
+    \fi #2}{\longrightarrow}}
+\newcommand{\siminf}[1][]{\sim[#1]{\infty}}
+\newcommand{\dlinf}[1][]{\dl[#1]{\infty}}
+\newcommand{\liiminf}[1][]{\liim[#1]{\infty}}
+\renewcommand{\O}[1]{O\!\left(#1\right)}
+\renewcommand{\o}[1]{o\!\left(#1\right)}
+\renewcommand{\d}[1]{\,{\mathrm d}{#1}} % À utiliser seulement dans le contexte d'une intégrale
+\newcommand{\ssi}{\ensuremath{\ \text{\bfseries ssi}\ }}
+\newcommand{\dt}{\d t}
+\newcommand{\dx}{\d x}
+\newcommand{\divise}{\mid}
+\newcommand{\nondivise}{\nmid}
+\newcommand{\ent}[1]{\left\lfloor #1\right\rfloor}
+\newcommand{\entsup}[1]{\left\lceil #1\right\rceil}
+\newcommand{\plaf}[1]{\left\lceil #1\right\rceil}
+\newcommand{\card}[1]{\left|#1\right|}
+\newcommand{\norm}[2][\@empty]{\left\lVert#2\right\rVert
+    \ifx#1\@empty % Un peu lourd, mais évite l'ajout d'une espace
+                  % supplémentaire lorsque la norme ne porte pas d'indice
+    \else% 
+        _{#1}%
+    \fi}
+\newcommand{\norminf}[1]{\norm[\infty]{#1}}
+\newcommand{\abs}[1]{\left\vert #1 \right\vert}
+\newcommand{\bra}[1]{\left\langle #1 \right\rangle}
+\let\gr\bra
+\newcommand{\ps}[2]{\left\langle #1 \mid #2 \right\rangle}
+\newcommand{\arete}[2]{\left\langle #1,\, #2 \right\rangle} % arete dans un graphe
+\newcommand{\chemin}[2]{\left\langle\!\left\langle #1,\, #2 \right\rangle\!\right\rangle} % chemin dans un graphe
+\newcommand{\ens}[2]{\left\{\,#1 \mid #2 \,\right\}} % ensemble
+\newcommand{\ie}[2]{\left[\!\left[#1,\, #2\right]\!\right]} % intervalle d'entiers
+\newcommand*{\defeq}{\mathrel{\rlap{% Fais un joli := (points alignés)
+                     \raisebox{0.3ex}{$\m@th\cdot$}}%
+                     \raisebox{-0.3ex}{$\m@th\cdot$}}%
+                     =}
+\newcommand{\restr}[2]{{#1}_{|_{{}^{#2}}}}
+\newcommand{\fun}[5][\@empty]{\ensuremath{
+    \arraycolsep=2.5pt % redéfinit localement l'espacement entre les colonnes
+    \begin{array}[t]{cccc}
+    \ifx#1\@empty \else #1\colon &\fi #4 & \longrightarrow & #5 \\
+    \ifx#1\@empty \else &\fi #2 & \longmapsto & #3
+    \end{array}
+}}
+\newcommand{\sfun}[3][\@empty]{\ensuremath{
+    \ifx#1\@empty \else #1\colon \fi #2 \mapsto  #3
+}}
+
+\newcommand\Kk{\ensuremath{\mathbb{K}}}
+\newcommand\Nn{\ensuremath{\mathbb{N}}}
+\newcommand\Zz{\ensuremath{\mathbb{Z}}}
+\newcommand\Qq{\ensuremath{\mathbb{Q}}}
+\newcommand\Rr{\ensuremath{\mathbb{R}}}
+\newcommand\Rrb{\overline{\mathbb{R}}}
+\newcommand\Cc{\ensuremath{\mathbb{C}}}
+\newcommand\Uu{\ensuremath{\mathbb{U}}}
+\newcommand\Pp{\ensuremath{\mathbb{P}}}
+\newcommand\Vv{\ensuremath{\mathbb{V}}}
+\newcommand\Bb{\ensuremath{\mathbb{B}}}
+\newcommand\Ee{\ensuremath{\mathbb{E}}}
+\NewDocumentCommand{\M}{O{n} D(){\Rr}}{\ensuremath{\mathcal M_{#1}(#2)}}
+\newcommand{\C}[1][0]{\ensuremath{\mathcal C^{#1}}}
+\DeclareMathOperator{\argmin}{argmin}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\let\th\relax % th est déjà défini
+\DeclareMathOperator{\th}{th}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\rg}{rg}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\Vect}{Vect}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SO}{SO}
+\let\S\relax
+\DeclareMathOperator{\S}{\mathcal S}
+\DeclareMathOperator{\A}{\mathcal A}
+% TODO améliorer et uniformiser les commmandes \S, \A, \O et \M
+\DeclareMathOperator{\ort}{O}
+\DeclareMathOperator{\Sp}{Sp}
+\DeclareMathOperator{\Com}{Com}
+\DeclareMathOperator{\diag}{diag}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Divers %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frenchbsetup{og=«, fg=»} % ajout des espaces insécables autour des guillemets
+%\newcommand{\asterism}{\bigskip\par\centerline{*\,*\,*}\medskip\par}% Autre définition de l'astérisme avec trois étoiles alignées. Peut-être faire une commande séparée au besoin.
+\newcommand{\asterism}{
+    \bigskip\par\noindent\parbox{\linewidth}{
+	\centering\large{*}\\[-4pt]{*}\hskip 0.75em{*}}\bigskip\par
+}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
