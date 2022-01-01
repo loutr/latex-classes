@@ -1,25 +1,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Lucas Tabary-Maujean, Copyleft 2021
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{compte-rendu}[2021/11/01 v0.2 Compte-rendu]
 \LoadClass{article}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RÉGLAGES DES PARAMÈTRES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage[pdfborderstyle={/S/U/W 0}]{hyperref} % Le paramètre retire les bordures autour des hyperliens
-\usepackage[twoside, asymmetric, a5paper, top=1.8cm, bottom=2cm, left=1cm, right=.9cm, headsep=10pt]{geometry}
-\usepackage[table]{xcolor}
-
-% Couleurs personnalisées
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{darkgray}{rgb}{0.2,0.2,0.2}
-\definecolor{dark}{rgb}{0,0,0}
+\RequirePackage[pdfborderstyle={/S/U/W 0}]{hyperref} % Le paramètre retire les bordures autour des hyperliens
+\RequirePackage[twoside, asymmetric, a5paper, top=1.8cm, bottom=2cm, left=1cm, right=.9cm, headsep=10pt]{geometry}
+\RequirePackage[table]{xcolor}
+\RequirePackage{base}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-\input{base.sty}
-
 
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Remplissage des en-têtes %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -47,10 +39,7 @@
 }
 
 \renewcommand{\headrulewidth}{0pt}
-\lhead{}
-\rhead{}
-\chead{}
-\cfoot{}
+\lhead{} \rhead{} \chead{} \cfoot{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

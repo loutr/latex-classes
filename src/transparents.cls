@@ -6,20 +6,16 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RÉGLAGES DES PARAMÈTRES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{pgfplots}
+\RequirePackage{base}
+\RequirePackage{pgfplots}
 \pgfplotsset{compat=1.17}
-\usepackage{appendixnumberbeamer}
+\RequirePackage{appendixnumberbeamer}
 \setbeamertemplate{footline}{\hspace{5pt}\vspace{5pt}\scriptsize{\insertframenumber/\inserttotalframenumber}}
 \beamertemplatenavigationsymbolsempty % retire les symboles de navigation du coin inférieur droit
 
 \usetheme{Frankfurt}
 \usecolortheme{seahorse}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-\input{base.sty}
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Création du titre %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,7 +70,6 @@
 
 \lstset{style=bdefault}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Divers %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

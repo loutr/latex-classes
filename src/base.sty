@@ -1,24 +1,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Lucas Tabary-Maujean, Copyleft 2021
-% Ce fichier ne doit pas être utilisé directement comme paquet
-% Ce fichier est à inclure par la commande \input dans les autres classes de documents.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\ProvidesPackage{base}[2022/01/01 v0.2 Base: base package for Loutr_'s collection]
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Paquets %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage[utf8]{luainputenc}
-\usepackage[T1]{fontenc}
 \usepackage[french]{babel}
 \usepackage{amssymb, amsmath, amsthm, mathrsfs}
 \usepackage{fancyhdr}
 \usepackage{xparse}
 \usepackage{listings}
-% \usepackage[table]{xcolor}
+\usepackage{syntax} % BNF grammars
+\usepackage{mathpartir} % proof tree
+%\usepackage[table]{xcolor} % may not be loaded here, is already loaded by Beamer
 \usepackage{tikz}
 \usepackage[framemethod=tikz]{mdframed}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -47,25 +44,35 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Couleurs personnalisées %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{darkgray}{rgb}{0.2,0.2,0.2}
+\definecolor{darkgray}{rgb}{0.1,0.1,0.1}
 \definecolor{dark}{rgb}{0,0,0}
+\definecolor{forestgreen}{rgb}{0,0.3,0}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
 %%%%%%%%%%%%%%%% Configuration des environnements listings (écriture d'algorithmes) %%%%%%%%%%%%%%%%
-\lstMakeShortInline[columns=fixed]£
+% Please read the (well-writen) documentation of Listings before googling
+
+\lstMakeShortInline[columns=flexible]§
 
 \lstdefinestyle{default}{
     frame=tb,
     basicstyle={\small\ttfamily\color{darkgray}},
     numbers=left,
-    numberstyle=\scriptsize\sffamily,
-    keywordstyle=\color{blue},
+    numberstyle={\scriptsize\sffamily},
+    morestring=[d]{"},
+    morestring=[d]{'},
+    stringstyle={\color{red!50!brown}},
+    keywordstyle={\bfseries\color{dark}},
     commentstyle=\color{gray},
+    texcl, % Back to TeX styling within *inline* comments
+    escapechar =`, % escape character for block comments
+    escapebegin=\lst@commentstyle,
     breaklines=true,
     breakatwhitespace=true
 }
+\lstset{style=default}
 
 \lstdefinestyle{caml}{
     style=default,
@@ -108,9 +115,26 @@
 }
 \lstnewenvironment{naturel}[1][]{\lstset{style=naturel, #1}}{}
 
-\lstset{style=default}
+\lstdefinestyle{pcf}{
+    style=default,
+    comment=[s]{(*}{*)},
+    keywords={letrec, let, if, then, else, in},
+    keywords=[2]{ff, tt},
+    keywordstyle=[2]\color{forestgreen},
+}
+\lstnewenvironment{pcf}[1][]{\lstset{style=pcf, #1}}{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% BNF Grammars parameters and configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newif\ifbase@nobra
+\DeclareOption{nobra}{\base@nobratrue} % remove angle brackets around BNF grammar descriptions
+\ProcessOptions\relax
+\ifbase@nobra
+    \renewcommand{\syntleft}{\normalfont\itshape}
+    \renewcommand{\syntright}{}
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Environnements Personnalisés %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -148,11 +172,11 @@
     innerleftmargin=4pt, innerrightmargin=4pt, innertopmargin=4pt, innerbottommargin=4pt,
     backgroundcolor=gray!10, linewidth=0pt,
     align=center, outermargin=0.15\textwidth
-]{citation*}
-\renewenvironment{citation}[1][]
+]{citenv*}
+\newenvironment{citenv}[1][]
 {%
     \def\auteur{#1}% défini pour pouvoir être utilisé dans \endcitation
-    \begin{citation*}
+    \begin{citenv*}
     \makebox[0pt][r]{\smash{\raisebox{-.333\height}
     {{\Huge\bfseries \textcolor{gray}{``}}\hspace{-4pt}}\ignorespaces}}
 }
@@ -161,7 +185,7 @@
     \else
 	\signed{\auteur}
     \fi
-    \end{citation*}
+    \end{citenv*}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -208,18 +232,29 @@
         _{#1}%
     \fi}
 \newcommand{\norminf}[1]{\norm[\infty]{#1}}
+% évaluation en sémantique dénotationnelle:
+\newcommand{\eval}[2][\@empty]{\left[\!\left[#2\right]\!\right]
+    \ifx#1\@empty % Un peu lourd, mais évite l'ajout d'une espace
+                  % supplémentaire lorsque la sémantique ne porte pas d'indice
+    \else% 
+        _{#1}%
+    \fi}
+\newcommand{\evr}[1]{\eval[\rho]{#1}}
 \newcommand{\abs}[1]{\left\vert #1 \right\vert}
 \newcommand{\bra}[1]{\left\langle #1 \right\rangle}
 \let\gr\bra
 \newcommand{\ps}[2]{\left\langle #1 \mid #2 \right\rangle}
 \newcommand{\arete}[2]{\left\langle #1,\, #2 \right\rangle} % arete dans un graphe
+\newcommand{\graph}[2]{\left\langle #1,\, #2 \right\rangle}
 \newcommand{\chemin}[2]{\left\langle\!\left\langle #1,\, #2 \right\rangle\!\right\rangle} % chemin dans un graphe
 \newcommand{\ens}[2]{\left\{\,#1 \mid #2 \,\right\}} % ensemble
 \newcommand{\ie}[2]{\left[\!\left[#1,\, #2\right]\!\right]} % intervalle d'entiers
-\newcommand*{\defeq}{\mathrel{\rlap{% Fais un joli := (points alignés)
+\newcommand*{\defeq}{\mathrel{\rlap{% Fait un joli := (points alignés)
                      \raisebox{0.3ex}{$\m@th\cdot$}}%
                      \raisebox{-0.3ex}{$\m@th\cdot$}}%
                      =}
+\newcommand{\esp}[1]{\mathbb{E}\!\left[#1\right]}
+\newcommand{\var}[1]{\mathbb{V}\!\left[#1\right]}
 \newcommand{\restr}[2]{{#1}_{|_{{}^{#2}}}}
 \newcommand{\fun}[5][\@empty]{\ensuremath{
     \arraycolsep=2.5pt % redéfinit localement l'espacement entre les colonnes
@@ -236,6 +271,7 @@
 \newcommand\Nn{\ensuremath{\mathbb{N}}}
 \newcommand\Zz{\ensuremath{\mathbb{Z}}}
 \newcommand\Qq{\ensuremath{\mathbb{Q}}}
+\newcommand\Hh{\ensuremath{\mathbb{H}}}
 \newcommand\Rr{\ensuremath{\mathbb{R}}}
 \newcommand\Rrb{\overline{\mathbb{R}}}
 \newcommand\Cc{\ensuremath{\mathbb{C}}}
@@ -257,6 +293,9 @@
 \DeclareMathOperator{\dom}{dom}
 \DeclareMathOperator{\Vect}{Vect}
 \DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\PGL}{PGL}
+\DeclareMathOperator{\PSL}{PSL}
 \DeclareMathOperator{\SO}{SO}
 \let\S\relax
 \DeclareMathOperator{\S}{\mathcal S}
@@ -271,6 +310,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Divers %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def \TirNameStyle #1{(\small #1)} % style des annotations dans un arbre de preuve (mathpartir)
 \frenchbsetup{og=«, fg=»} % ajout des espaces insécables autour des guillemets
 %\newcommand{\asterism}{\bigskip\par\centerline{*\,*\,*}\medskip\par}% Autre définition de l'astérisme avec trois étoiles alignées. Peut-être faire une commande séparée au besoin.
 \newcommand{\asterism}{

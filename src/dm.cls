@@ -1,15 +1,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Lucas Tabary-Maujean, Copyleft 2021
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\ProvidesClass{dm}[2021/04/01 v0.1 DM]
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesClass{dm}[2021/04/01 v0.2 DM]
 \LoadClass{article}
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RÉGLAGES DES PARAMÈTRES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{moreenum}
-\usepackage[pdfborderstyle={/S/U/W 0}]{hyperref} % Le paramètre retire les bordures autour des hyperliens
-
 \newif\ifdm@smaller
 \newif\ifdm@noname
 \DeclareOption{smaller}{\dm@smallertrue} % taille plus petite (par défaut)
@@ -17,20 +14,19 @@
 \DeclareOption{noname}{\dm@nonametrue} % retire le nom de l'auteur
 
 \ExecuteOptions{smaller} % smaller est le paramètre par défaut
-
 \ProcessOptions\relax
 
+\RequirePackage{base}
+\RequirePackage{moreenum}
+\RequirePackage[pdfborderstyle={/S/U/W 0}]{hyperref} % Le paramètre retire les bordures autour des hyperliens
+
+
 \ifdm@smaller
-    \usepackage[twoside, asymmetric, a5paper, top=1.8cm, bottom=2cm, left=1.1cm, right=.9cm, headsep=10pt]{geometry}
+    \RequirePackage[twoside, asymmetric, a5paper, top=1.8cm, bottom=2cm, left=1.1cm, right=.9cm, headsep=10pt]{geometry}
 \else
-    \usepackage[twoside, asymmetric, a4paper, right=2.3cm, bottom=3cm, headsep=40pt]{geometry}
+    \RequirePackage[twoside, asymmetric, a4paper, right=2.3cm, bottom=3cm, headsep=40pt]{geometry}
 \fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-\input{base.sty}
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Création du titre %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -80,10 +76,15 @@
 \setlength{\parskip}{1.2ex minus 1ex}
 
  % Réglages des puces
-\newlist{rep}{enumerate}{2}
-\setlist[rep]{parsep=\parskip, leftmargin=0pt, itemsep=15pt, topsep=3pt, listparindent=\parindent,
+\newlist{secrep}{enumerate}{2}
+\setlist[secrep]{parsep=\parskip, leftmargin=0pt, itemsep=15pt, topsep=3pt, listparindent=\parindent,
 label=\textsubscript{\thesection}\textbf{\arabic*.}}
-\setlist[rep, 2]{parsep=\parskip, leftmargin=14pt, itemsep=10pt, topsep=3pt, listparindent=\parindent, label=(\alph*)} 
+\setlist[secrep, 2]{parsep=\parskip, leftmargin=14pt, itemsep=10pt, topsep=3pt, listparindent=\parindent, label=(\alph*)} 
+
+\newlist{nosecrep}{enumerate}{2}
+\setlist[nosecrep]{parsep=\parskip, leftmargin=0pt, itemsep=15pt, topsep=3pt, listparindent=\parindent,
+label=\textbf{\arabic*.}}
+\setlist[nosecrep, 2]{parsep=\parskip, leftmargin=14pt, itemsep=10pt, topsep=3pt, listparindent=\parindent, label=(\alph*)} 
 
 %\allowdisplaybreaks % Permet au environnement align d'êtres scindés sur plusieurs pages
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
