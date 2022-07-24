@@ -34,20 +34,22 @@
 \ifrapport@noname
     \author{}
 \else
-    \author{\@auteur{} --- \@info, \normalsize \texttt{\@email}}
+    \author{\@auteur{} --- \@info\\ \normalsize \texttt{\@email}}
 \fi
 
 % wrapper de maketitle qui permet l'écriture d'un abstract sur une seule colonne
-\newcommand{\fairetitre}[1]{
+\newcommand{\fairetitre}[1]{%
     \thispagestyle{fancy}
     \twocolumn[
 	\begin{@twocolumnfalse}
-	    \maketitle
+        \maketitle
+        \ifx#1\@empty\else
 	    \begin{abstract}
 		{\normalsize #1}
 	    \end{abstract}
-	\end{@twocolumnfalse}
 	\vspace{1cm}
+        \fi
+	\end{@twocolumnfalse}
     ]
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

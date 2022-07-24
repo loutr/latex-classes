@@ -2,19 +2,21 @@
 % Lucas Tabary-Maujean, Copyleft 2021
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ProvidesClass{transparents}[2021/05/28 v0.1 Transparents]
-\LoadClass[xcolor=table]{beamer}
+\LoadClass[xcolor=table, aspectratio=169]{beamer}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RÉGLAGES DES PARAMÈTRES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{base}
+\uselanguage{French}
+\languagepath{French}
 \RequirePackage{pgfplots}
 \pgfplotsset{compat=1.17}
 \RequirePackage{appendixnumberbeamer}
 \setbeamertemplate{footline}{\hspace{5pt}\vspace{5pt}\scriptsize{\insertframenumber/\inserttotalframenumber}}
 \beamertemplatenavigationsymbolsempty % retire les symboles de navigation du coin inférieur droit
 
-\usetheme{Frankfurt}
-\usecolortheme{seahorse}
+\usetheme{Goettingen}
+\usecolortheme{rose}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

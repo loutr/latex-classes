@@ -16,9 +16,10 @@
 \ExecuteOptions{smaller} % smaller est le paramètre par défaut
 \ProcessOptions\relax
 
-\RequirePackage{base}
 \RequirePackage{moreenum}
 \RequirePackage[pdfborderstyle={/S/U/W 0}]{hyperref} % Le paramètre retire les bordures autour des hyperliens
+% hyperref defines accentuated commands like \d, \O (why?) 
+\RequirePackage{base}
 
 
 \ifdm@smaller
@@ -31,7 +32,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Création du titre %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\fairetitre}{
-\hypersetup{pdftitle={\@identifiant{} (\@categorie)}} % Change le titre du fichier dans le lecteur PDF
+\hypersetup{pdftitle={\@categorie{} (\@identifiant)}} % Change le titre du fichier dans le lecteur PDF
 \newpage
 \begin{mdframed}[leftline=false, topline=false, linecolor=gray, linewidth=2pt,
                  align=center, userdefinedwidth=0.9\textwidth]
@@ -57,7 +58,7 @@
     \fancyfoot[LR]{}
     \fancyfoot[C]{\thepage}
 \else
-    \fancyfoot[LO]{\small{\@auteur{}, \reflectbox{\copyright}\the\year{} {
+    \fancyfoot[LO]{\small{\@auteur{}, \reflectbox{\copyright}\the\year{}{
 	\ifx\@email\@empty%
 	\else%
 	    -- \texttt{\href{mailto:\@email}{\@email}}%
@@ -76,15 +77,16 @@
 \setlength{\parskip}{1.2ex minus 1ex}
 
  % Réglages des puces
-\newlist{secrep}{enumerate}{2}
-\setlist[secrep]{parsep=\parskip, leftmargin=0pt, itemsep=15pt, topsep=3pt, listparindent=\parindent,
-label=\textsubscript{\thesection}\textbf{\arabic*.}}
-\setlist[secrep, 2]{parsep=\parskip, leftmargin=14pt, itemsep=10pt, topsep=3pt, listparindent=\parindent, label=(\alph*)} 
+%\newlist{secrep}{enumerate}{3}
+%\setlist[secrep]{parsep=\parskip, leftmargin=0pt, itemsep=15pt, topsep=3pt, listparindent=\parindent,
+% label=\textsubscript{\thesection}\textbf{\arabic*.}}
+%\setlist[secrep, 2]{parsep=\parskip, leftmargin=14pt, itemsep=10pt, topsep=3pt, listparindent=\parindent, label=(\alph*)} 
 
-\newlist{nosecrep}{enumerate}{2}
-\setlist[nosecrep]{parsep=\parskip, leftmargin=0pt, itemsep=15pt, topsep=3pt, listparindent=\parindent,
+\newlist{repp}{enumerate}{3}
+\setlist[repp]{parsep=\parskip, leftmargin=0pt, itemsep=15pt, topsep=3pt, listparindent=\parindent,
 label=\textbf{\arabic*.}}
-\setlist[nosecrep, 2]{parsep=\parskip, leftmargin=14pt, itemsep=10pt, topsep=3pt, listparindent=\parindent, label=(\alph*)} 
+\setlist[repp, 2]{parsep=\parskip, leftmargin=14pt, itemsep=10pt, topsep=3pt, listparindent=\parindent, label=(\alph*)} 
+\setlist[repp, 3]{parsep=\parskip, leftmargin=12pt, itemsep=10pt, topsep=3pt, listparindent=\parindent, label=(\roman*)} 
 
 %\allowdisplaybreaks % Permet au environnement align d'êtres scindés sur plusieurs pages
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

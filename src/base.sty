@@ -5,13 +5,13 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Paquets %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage[french]{babel}
+\usepackage[british, french]{babel}
 \usepackage{amssymb, amsmath, amsthm, mathrsfs}
 \usepackage{fancyhdr}
 \usepackage{xparse}
 \usepackage{listings}
 \usepackage{syntax} % BNF grammars
-\usepackage{mathpartir} % proof tree
+\usepackage{bussproofs} % proof tree
 %\usepackage[table]{xcolor} % may not be loaded here, is already loaded by Beamer
 \usepackage{tikz}
 \usepackage[framemethod=tikz]{mdframed}
@@ -54,7 +54,24 @@
 %%%%%%%%%%%%%%%% Configuration des environnements listings (écriture d'algorithmes) %%%%%%%%%%%%%%%%
 % Please read the (well-writen) documentation of Listings before googling
 
-\lstMakeShortInline[columns=flexible]§
+% https://tex.stackexchange.com/a/127018
+% this will also work within bussproof, but the shortcut ¤ may not be used.
+% allowing inline listing within math mode:
+\usepackage{letltxmacro}
+\newcommand*{\SavedLstInline}{}
+\LetLtxMacro\SavedLstInline\lstinline
+\DeclareRobustCommand*{\lstinline}{%
+  \ifmmode
+    \let\SavedBGroup\bgroup
+    \def\bgroup{%
+      \let\bgroup\SavedBGroup
+      \hbox\bgroup
+    }%
+  \fi
+  \SavedLstInline
+}
+
+\lstMakeShortInline[columns=flexible]¤
 
 \lstdefinestyle{default}{
     frame=tb,
@@ -67,8 +84,8 @@
     keywordstyle={\bfseries\color{dark}},
     commentstyle=\color{gray},
     texcl, % Back to TeX styling within *inline* comments
-    escapechar =`, % escape character for block comments
-    escapebegin=\lst@commentstyle,
+    escapechar=`, % escape character for block comments
+    %escapebegin=\lst@commentstyle,
     breaklines=true,
     breakatwhitespace=true
 }
@@ -104,7 +121,10 @@
     comment=[l]{//},
     keywords={for, to, do, done, if, then, else, end, while,
 	match, with, function, and, or, return},
+    keywords=[2]{INPUT, PROCESSING, DATA, OUTPUT},
+    keywordstyle=[2]\color{forestgreen},
     literate= % attention à l'ordre des opérateurs si certains sont suffixes des autres
+	{===}{$\equiv$}{1}
 	{<}{$<$}{1}
 	{<=}{$\leqslant$}{1}
 	{>}{$>$}{1}
@@ -115,18 +135,24 @@
 }
 \lstnewenvironment{naturel}[1][]{\lstset{style=naturel, #1}}{}
 
-\lstdefinestyle{pcf}{
+\lstdefinestyle{pcf}{ % langage pour la sémantique
     style=default,
+    frame=none,
+    numbers=none,
+    xleftmargin=15pt, xrightmargin=15pt,
     comment=[s]{(*}{*)},
-    keywords={letrec, let, if, then, else, in},
+    keywords={letrec, let, if, then, else, in,
+	    abort, exn, try, with},
     keywords=[2]{ff, tt},
     keywordstyle=[2]\color{forestgreen},
+    mathescape,
 }
 \lstnewenvironment{pcf}[1][]{\lstset{style=pcf, #1}}{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% BNF Grammars parameters and configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Pour des littéraux sans quote, penser à utiliser "".
 \newif\ifbase@nobra
 \DeclareOption{nobra}{\base@nobratrue} % remove angle brackets around BNF grammar descriptions
 \ProcessOptions\relax
@@ -142,6 +168,14 @@
 \newcommand*\circled[1]{\tikz[baseline=(char.base)]{
     \node[shape=circle,double,fill=gray!10,draw,inner sep=1.5pt] (char) {#1};}}
 
+
+% Propositions
+\newmdenv[
+    skipabove=\topskip, skipbelow=\topskip,
+    innermargin=0pt, roundcorner=4pt,
+    innerleftmargin=4pt, innerrightmargin=4pt, innertopmargin=4pt, innerbottommargin=4pt,
+    backgroundcolor=gray!10, linewidth=0pt
+]{prop}
 
 % Questions/Énoncés
 \newmdenv[
@@ -175,7 +209,7 @@
 ]{citenv*}
 \newenvironment{citenv}[1][]
 {%
-    \def\auteur{#1}% défini pour pouvoir être utilisé dans \endcitation
+    \def\auteur{#1}% défini pour pouvoir être utilisé dans \endcitenv
     \begin{citenv*}
     \makebox[0pt][r]{\smash{\raisebox{-.333\height}
     {{\Huge\bfseries \textcolor{gray}{``}}\hspace{-4pt}}\ignorespaces}}
@@ -192,16 +226,15 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Macros mathématiques %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\let\oldsim\sim
 \let\eps\varepsilon
 \let\bar\overline
 \let\til\widetilde
 \let\imp\Longrightarrow
 % Attention ! Redéfinition de \sim (~)
-\renewcommand{\sim}[2][]{\underset{\ifx#1\@empty%
+\newcommand{\simdl}[2][]{\underset{\ifx#1\@empty%
     \else%
         #1\rightarrow%
-    \fi #2}{\oldsim}}
+    \fi #2}{\sim}}
 \newcommand{\dl}[2][]{\underset{\ifx#1\@empty%
     \else%
         #1\rightarrow%
@@ -210,7 +243,7 @@
     \else%
         #1\rightarrow%
     \fi #2}{\longrightarrow}}
-\newcommand{\siminf}[1][]{\sim[#1]{\infty}}
+\newcommand{\siminf}[1][]{\simdl[#1]{\infty}}
 \newcommand{\dlinf}[1][]{\dl[#1]{\infty}}
 \newcommand{\liiminf}[1][]{\liim[#1]{\infty}}
 \renewcommand{\O}[1]{O\!\left(#1\right)}
@@ -239,15 +272,20 @@
     \else% 
         _{#1}%
     \fi}
+\let\typ\eval
 \newcommand{\evr}[1]{\eval[\rho]{#1}}
 \newcommand{\abs}[1]{\left\vert #1 \right\vert}
+\newcommand{\occ}[2]{\left\vert #2 \right\vert_#1}
 \newcommand{\bra}[1]{\left\langle #1 \right\rangle}
 \let\gr\bra
 \newcommand{\ps}[2]{\left\langle #1 \mid #2 \right\rangle}
+\newcommand{\concat}{\mathrel{+\!+}}
 \newcommand{\arete}[2]{\left\langle #1,\, #2 \right\rangle} % arete dans un graphe
 \newcommand{\graph}[2]{\left\langle #1,\, #2 \right\rangle}
 \newcommand{\chemin}[2]{\left\langle\!\left\langle #1,\, #2 \right\rangle\!\right\rangle} % chemin dans un graphe
+\newcommand{\tra}[1]{\overset{#1}{\longrightarrow}{\!\!}^*} % transition (automate)
 \newcommand{\ens}[2]{\left\{\,#1 \mid #2 \,\right\}} % ensemble
+\newcommand{\ensd}[2]{\left\{\,#1 \colon #2 \,\right\}} % ensemble image
 \newcommand{\ie}[2]{\left[\!\left[#1,\, #2\right]\!\right]} % intervalle d'entiers
 \newcommand*{\defeq}{\mathrel{\rlap{% Fait un joli := (points alignés)
                      \raisebox{0.3ex}{$\m@th\cdot$}}%
@@ -280,6 +318,7 @@
 \newcommand\Vv{\ensuremath{\mathbb{V}}}
 \newcommand\Bb{\ensuremath{\mathbb{B}}}
 \newcommand\Ee{\ensuremath{\mathbb{E}}}
+\newcommand{\mt}[1]{#1^{\!\top}}
 \NewDocumentCommand{\M}{O{n} D(){\Rr}}{\ensuremath{\mathcal M_{#1}(#2)}}
 \newcommand{\C}[1][0]{\ensuremath{\mathcal C^{#1}}}
 \DeclareMathOperator{\argmin}{argmin}
@@ -300,7 +339,7 @@
 \let\S\relax
 \DeclareMathOperator{\S}{\mathcal S}
 \DeclareMathOperator{\A}{\mathcal A}
-% TODO améliorer et uniformiser les commmandes \S, \A, \O et \M
+% TODO améliorer et uniformiser les commmandes \S, \A, \ort et \M
 \DeclareMathOperator{\ort}{O}
 \DeclareMathOperator{\Sp}{Sp}
 \DeclareMathOperator{\Com}{Com}
@@ -309,8 +348,22 @@
 
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% bussproofs settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% documentation at https://mirror.ibcp.fr/pub/CTAN/macros/latex/contrib/bussproofs/BussGuide2.pdf
+\EnableBpAbbreviations
+% Overriding default label style
+\def\RL#1{\RightLabel{\footnotesize\bfseries{#1}}}
+\def\LL#1{\LeftLabel{\footnotesize\bfseries{#1}}}
+
+% boxed proofs, used to align multiple proofs on a single line
+\newenvironment{bprooftree}
+  {\leavevmode\hbox\bgroup}
+  {\DisplayProof\egroup}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Divers %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def \TirNameStyle #1{(\small #1)} % style des annotations dans un arbre de preuve (mathpartir)
 \frenchbsetup{og=«, fg=»} % ajout des espaces insécables autour des guillemets
 %\newcommand{\asterism}{\bigskip\par\centerline{*\,*\,*}\medskip\par}% Autre définition de l'astérisme avec trois étoiles alignées. Peut-être faire une commande séparée au besoin.
 \newcommand{\asterism}{
